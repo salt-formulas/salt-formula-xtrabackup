@@ -1,0 +1,6 @@
+salt-formula-xtrabackup (0.2) xenial; urgency=medium
+
+  * First public release
+
+ -- Jiri Broulik <jbroulik@mirantis.com>  Tue, 06 Oct 2015 16:38:36 +0200
+

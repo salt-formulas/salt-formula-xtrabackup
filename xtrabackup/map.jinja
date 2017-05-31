@@ -1,0 +1,22 @@
+
+{% set client = salt['grains.filter_by']({
+  'Debian': {
+    'pkgs': ['percona-xtrabackup'],
+    'backup_dir': '/var/backups/mysql/xtrabackup'
+  },
+  'RedHat': {
+    'pkgs': ['percona-xtrabackup'],
+    'backup_dir': '/var/backups/mysql/xtrabackup'
+  },
+}, merge=salt['pillar.get']('xtrabackup:client')) %}
+
+{% set server = salt['grains.filter_by']({
+  'Debian': {
+    'pkgs': ['rsync'],
+    'backup_dir': '/var/backups/mysql/xtrabackup'
+  },
+  'RedHat': {
+    'pkgs': ['rsync'],
+    'backup_dir': '/var/backups/mysql/xtrabackup'
+  },
+}, merge=salt['pillar.get']('xtrabackup:server')) %}

@@ -1,0 +1,25 @@
+applications:
+- xtrabackup
+classes:
+- service.xtrabackup.support
+parameters:
+  _param:
+    xtrabackup_qpress_source: tar
+    xtrabackup_qpress_source_name: http://www.quicklz.com/qpress-11-linux-x64.tar
+    xtrabackup_remote_server: cfg01
+  xtrabackup:
+    client:
+      enabled: true
+      full_backups_to_keep: 3
+      hours_before_full: 48
+      hours_before_incr: 12
+      compression: true
+      compression_threads: 2
+      database:
+        user: root
+        password: ${_param:galera_server_admin_password}
+      target:
+        host: ${_param:xtrabackup_remote_server}
+      qpress:
+        source: ${_param:xtrabackup_qpress_source}
+        name: ${_param:xtrabackup_qpress_source_name}

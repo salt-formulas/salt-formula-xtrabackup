@@ -1,0 +1,15 @@
+doc:
+  name: xtrabackup
+  description: xtrabackup allows you to backup database periodically in binary format. Including full and incremental backups.
+  role:
+  {%- if pillar.xtrabackup.client is defined %}
+  {%- from "xtrabackup/map.jinja" import client with context %}
+    client:
+      name: client
+      param: {}
+  {%- endif %}
+  {%- if pillar.xtrabackup.server is defined %}
+    server:
+      name: server
+      param: {}
+  {%- endif %}

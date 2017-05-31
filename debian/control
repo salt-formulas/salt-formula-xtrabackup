@@ -1,0 +1,15 @@
+Source: salt-formula-xtrabackup
+Maintainer: Salt Formulas Community <salt-formulas@freelists.org>
+Section: admin
+Priority: optional
+Build-Depends: salt-master, python, python-yaml, debhelper (>= 9)
+Standards-Version: 3.9.6
+Homepage: http://www.mirantis.com
+Vcs-Browser: https://github.com/salt-formulas/salt-formula-xtrabackup
+Vcs-Git: https://github.com/salt-formulas/salt-formula-xtrabackup.git
+
+Package: salt-formula-xtrabackup
+Architecture: all
+Depends: ${misc:Depends}, salt-master, reclass
+Description: xtrabackup salt formula
+ Install and configure xtrabackup backup system.
