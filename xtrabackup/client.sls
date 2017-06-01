@@ -34,6 +34,9 @@ xtrabackup_client_runner_cron:
   cron.present:
   - name: /usr/local/bin/innobackupex-runner.sh
   - user: root
+{%- if not client.cron %}
+  - commented: True
+{%- endif %}
   - minute: 0
 {%- if client.hours_before_incr is defined %}
 {%- if client.hours_before_incr <= 23 and client.hours_before_incr > 1 %}

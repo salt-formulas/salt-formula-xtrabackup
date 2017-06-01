@@ -49,6 +49,9 @@ xtrabackup_server_cron:
   cron.present:
   - name: /usr/local/bin/innobackupex-runner.sh
   - user: xtrabackup
+{%- if not server.cron %}
+  - commented: True
+{%- endif %}
   - minute: 0
   - hour: 2
   - require:
