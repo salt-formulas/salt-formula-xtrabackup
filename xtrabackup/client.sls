@@ -14,18 +14,16 @@ xtrabackup_client_runner_script:
   - require:
     - pkg: xtrabackup_client_packages
 
-xtrabackup_client_restore_script:
-  file.managed:
-  - name: /usr/local/bin/innobackupex-restore.sh
-  - source: salt://xtrabackup/files/innobackupex-client-restore.sh
-  - template: jinja
-  - mode: 655
-  - require:
-    - pkg: xtrabackup_client_packages
-
-xtrabackups_dir:
+xtrabackups_full_dir:
   file.directory:
-  - name: {{ client.backup_dir }}
+  - name: {{ client.backup_dir }}/full
+  - user: root
+  - group: root
+  - makedirs: true
+
+xtrabackups_incr_dir:
+  file.directory:
+  - name: {{ client.backup_dir }}/incr
   - user: root
   - group: root
   - makedirs: true
@@ -51,6 +49,15 @@ xtrabackup_client_runner_cron:
     - file: xtrabackup_client_runner_script
 
 {%- if client.restore_full_latest is defined %}
+
+xtrabackup_client_restore_script:
+  file.managed:
+  - name: /usr/local/bin/innobackupex-restore.sh
+  - source: salt://xtrabackup/files/innobackupex-client-restore.sh
+  - template: jinja
+  - mode: 655
+  - require:
+    - pkg: xtrabackup_client_packages
 
 xtrabackup_client_call_restore_script:
   file.managed:

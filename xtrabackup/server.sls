@@ -11,7 +11,17 @@ xtrabackup_user:
   - system: true
   - home: {{ server.backup_dir }}
 
-{{ server.backup_dir }}:
+{{ server.backup_dir }}/full:
+  file.directory:
+  - mode: 755
+  - user: xtrabackup
+  - group: xtrabackup
+  - makedirs: true
+  - require:
+    - user: xtrabackup_user
+    - pkg: xtrabackup_server_packages
+
+{{ server.backup_dir }}/incr:
   file.directory:
   - mode: 755
   - user: xtrabackup
@@ -30,7 +40,8 @@ xtrabackup_key_{{ key.key }}:
   - user: xtrabackup
   - name: {{ key.key }}
   - require:
-    - file: {{ server.backup_dir }}
+    - file: {{ server.backup_dir }}/full
+    - file: {{ server.backup_dir }}/incr
 
 {%- endif %}
 
