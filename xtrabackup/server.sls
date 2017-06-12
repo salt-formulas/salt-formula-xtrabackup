@@ -5,6 +5,17 @@ xtrabackup_server_packages:
   pkg.installed:
   - names: {{ server.pkgs }}
 
+{%- set parent_backup_dir = salt['file.dirname'](server.backup_dir) %}
+
+{{  parent_backup_dir  }}:
+  file.directory:
+  - mode: 755
+  - user: root
+  - group: root
+  - makedirs: true
+  - require:
+    - pkg: xtrabackup_server_packages
+
 xtrabackup_user:
   user.present:
   - name: xtrabackup
