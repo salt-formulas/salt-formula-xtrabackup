@@ -133,7 +133,7 @@ echo "Databases backed up successfully to: $THISBACKUP"
 echo
 
 # rsync just the new or modified backup files
-{%- if client.target.host is defined %}
+{%- if client.target is defined %}
 echo "Adding ssh-key of remote host to known_hosts"
 ssh-keygen -R {{ client.target.host }} 2>&1 | > $rsyncLog
 ssh-keyscan {{ client.target.host }} >> ~/.ssh/known_hosts  2>&1 | >> $rsyncLog
