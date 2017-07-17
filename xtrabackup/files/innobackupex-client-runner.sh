@@ -7,8 +7,6 @@
 # Every time it runs will generate an incremental backup except for the first time (full backup).
 # FULLBACKUPLIFE variable will define your full backups schedule.
 
-INNOBACKUPEX=innobackupex-1.5.1
-INNOBACKUPEXFULL=/usr/bin/$INNOBACKUPEX
 USEROPTIONS="--user={{ client.database.user }} --password={{ client.database.password }}"
 #TMPFILE="/var/log/backups/innobackupex-runner.$$.tmp"
 LOGDIR=/var/log/backups
@@ -50,11 +48,7 @@ error()
 	exit 1
 }
 
-# Check options before proceeding
-if [ ! -x $INNOBACKUPEXFULL ]; then
-  error "$INNOBACKUPEXFULL does not exist."
-fi
-
+# Check prerequisites before proceeding
 if [ ! -d $BACKUPDIR ]; then
   error "Backup destination folder: $BACKUPDIR does not exist."
 fi
@@ -112,10 +106,10 @@ if [ "$LATEST_FULL" -a `expr $LATEST_FULL_CREATED_AT + $FULLBACKUPLIFE + 5` -ge 
   fi
 
   echo "Running new incremental backup using $INCRBASEDIR as base."
-  $INNOBACKUPEXFULL --defaults-file=$MYCNF $USEROPTIONS $compress $compression_threads --incremental $TMPINCRDIR --incremental-basedir $INCRBASEDIR > $TMPFILE 2>&1
+  innobackupex --defaults-file=$MYCNF $USEROPTIONS $compress $compression_threads --incremental $TMPINCRDIR --incremental-basedir $INCRBASEDIR > $TMPFILE 2>&1
 else
   echo "Running new full backup."
-  $INNOBACKUPEXFULL --defaults-file=$MYCNF $USEROPTIONS $compress $compression_threads $FULLBACKUPDIR > $TMPFILE 2>&1
+  innobackupex --defaults-file=$MYCNF $USEROPTIONS $compress $compression_threads $FULLBACKUPDIR > $TMPFILE 2>&1
 fi
 
 if [ -z "`tail -1 $TMPFILE | grep 'completed OK!'`" ] ; then

@@ -5,8 +5,6 @@
 #
 # usage example for incr backup restore: ./restore.sh /var/backups/mysql/xtrabackup/incr/2017-05-24_19-48-10/2017-05-24_19-55-35/
 
-INNOBACKUPEX=innobackupex-1.5.1
-INNOBACKUPEXFULL=/usr/bin/$INNOBACKUPEX
 #TMPFILE="/var/log/backups/innobackupex-restore.$$.tmp"
 TMPFILE="/var/log/backups/innobackupex-restore.log"
 MYCNF=/etc/mysql/my.cnf
@@ -46,10 +44,6 @@ check_innobackupex_error()
 }
 
 # Check options before proceeding
-if [ ! -x $INNOBACKUPEXFULL ]; then
-  error "$INNOBACKUPEXFULL does not exist."
-fi
-
 if [ -e $DBALREADYRESTORED ]; then
   error "Databases already restored. If you want to restore again delete $DBALREADYRESTORED file and run the script again."
 fi
@@ -188,13 +182,13 @@ else
     echo
 
     echo "Replay committed transactions on full backup"
-    $INNOBACKUPEXFULL --defaults-file=$MYCNF --apply-log --redo-only --use-memory=$MEMORY $FULLBACKUP > $TMPFILE 2>&1
+    innobackupex --defaults-file=$MYCNF --apply-log --redo-only --use-memory=$MEMORY $FULLBACKUP > $TMPFILE 2>&1
     check_innobackupex_error
 
     # Apply incrementals to base backup
     for i in `find $PARENT_DIR -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort -n`; do
       echo "Applying $i to full ..."
-      $INNOBACKUPEXFULL --defaults-file=$MYCNF --apply-log --redo-only --use-memory=$MEMORY $FULLBACKUP --incremental-dir=$PARENT_DIR/$i > $TMPFILE 2>&1
+      innobackupex --defaults-file=$MYCNF --apply-log --redo-only --use-memory=$MEMORY $FULLBACKUP --incremental-dir=$PARENT_DIR/$i > $TMPFILE 2>&1
       check_innobackupex_error
 
       if [ $INCR = $i ]; then
@@ -207,12 +201,12 @@ else
 fi
 
 echo "Preparing ..."
-$INNOBACKUPEXFULL --defaults-file=$MYCNF --apply-log --use-memory=$MEMORY $FULLBACKUP > $TMPFILE 2>&1
+innobackupex --defaults-file=$MYCNF --apply-log --use-memory=$MEMORY $FULLBACKUP > $TMPFILE 2>&1
 check_innobackupex_error
 
 echo
 echo "Restoring ..."
-$INNOBACKUPEXFULL --defaults-file=$MYCNF --copy-back $FULLBACKUP > $TMPFILE 2>&1
+innobackupex --defaults-file=$MYCNF --copy-back $FULLBACKUP > $TMPFILE 2>&1
 check_innobackupex_error
 chown -R mysql:mysql /var/lib/mysql
 #rm -f $TMPFILE
