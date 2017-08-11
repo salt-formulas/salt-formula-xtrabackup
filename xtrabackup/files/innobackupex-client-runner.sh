@@ -7,7 +7,7 @@
 # Every time it runs will generate an incremental backup except for the first time (full backup).
 # FULLBACKUPLIFE variable will define your full backups schedule.
 
-USEROPTIONS="--user={{ client.database.user }} --password={{ client.database.password }}"
+USEROPTIONS="--user={{ client.database.user }} --password={{ client.database.password }} --socket=/var/run/mysqld/mysqld.sock"
 #TMPFILE="/var/log/backups/innobackupex-runner.$$.tmp"
 LOGDIR=/var/log/backups
 TMPFILE="/var/log/backups/innobackupex-runner.log"
