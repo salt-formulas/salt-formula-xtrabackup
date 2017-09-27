@@ -6,7 +6,7 @@
 BACKUPDIR={{ server.backup_dir }} # Backups base directory
 FULLBACKUPDIR=$BACKUPDIR/full # Full backups directory
 INCRBACKUPDIR=$BACKUPDIR/incr # Incremental backups directory
-HOURSFULLBACKUPLIFE={{ server.hours_before_full }} # Lifetime of the latest full backup in seconds
+HOURSFULLBACKUPLIFE={{ server.hours_before_full }} # Lifetime of the latest full backup in hours
 FULLBACKUPLIFE=$(( $HOURSFULLBACKUPLIFE * 60 * 60 ))
 KEEP={{ server.full_backups_to_keep }} # Number of full backups (and its incrementals) to keep
 
