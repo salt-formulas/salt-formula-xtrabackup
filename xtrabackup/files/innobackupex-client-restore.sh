@@ -1,4 +1,5 @@
 {%- from "xtrabackup/map.jinja" import client with context %}
+{%- from "xtrabackup/map.jinja" import server with context %}
 #!/bin/sh
 #
 # Script to prepare and restore full and incremental backups created with innobackupex-runner.
@@ -92,12 +93,12 @@ case "$BACKUPPATH" in
           mkdir -p $INCRBACKUPDIR;
           PARENT_DIR=$INCRBACKUPDIR/$FULL;
           `scp -rp xtrabackup@{{ client.target.host }}:$REMOTE_PARENT_DIR/ $INCRBACKUPDIR/ >> $scpLog 2>&1`;
-          `scp -rp xtrabackup@{{ client.target.host }}:{{ client.backup_dir }}/full/$FULL/ $FULLBACKUPDIR/$FULL/ >> $scpLog 2>&1`;;
+          `scp -rp xtrabackup@{{ client.target.host }}:{{ server.backup_dir }}/full/$FULL/ $FULLBACKUPDIR/$FULL/ >> $scpLog 2>&1`;;
   *full*) echo "SCP getting full backup files";
           FULL=`basename $1`;
           mkdir -p $FULLBACKUPDIR;
           PARENT_DIR=$FULLBACKUPDIR;
-          `scp -rp xtrabackup@{{ client.target.host }}:{{ client.backup_dir }}/full/$FULL/ $FULLBACKUPDIR/$FULL/  >> $scpLog 2>&1`;;
+          `scp -rp xtrabackup@{{ client.target.host }}:{{ server.backup_dir }}/full/$FULL/ $FULLBACKUPDIR/$FULL/  >> $scpLog 2>&1`;;
   *)      echo "Unable to scp backup files from remote host"; exit 1 ;;
 esac
 

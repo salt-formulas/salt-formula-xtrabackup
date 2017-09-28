@@ -1,4 +1,5 @@
 {%- from "xtrabackup/map.jinja" import client with context %}
+{%- from "xtrabackup/map.jinja" import server with context %}
 #!/bin/sh
 # 
 # Script to create full and incremental backups (for all databases on server) using innobackupex from Percona.
@@ -14,7 +15,8 @@ TMPFILE="/var/log/backups/innobackupex-runner.log"
 MYCNF=/etc/mysql/my.cnf
 MYSQL=/usr/bin/mysql
 MYSQLADMIN=/usr/bin/mysqladmin
-BACKUPDIR={{ client.backup_dir }} # Backups base directory
+BACKUPDIR={{ client.backup_dir }} # Client side backups base directory
+SERVERBACKUPDIR={{ server.backup_dir }} # Server side backups base directory
 FULLBACKUPDIR=$BACKUPDIR/full # Full backups directory
 INCRBACKUPDIR=$BACKUPDIR/incr # Incremental backups directory
 HOURSFULLBACKUPLIFE={{ client.hours_before_full }} # Lifetime of the latest full backup in hours
@@ -132,7 +134,7 @@ echo "Adding ssh-key of remote host to known_hosts"
 ssh-keygen -R {{ client.target.host }} 2>&1 | > $rsyncLog
 ssh-keyscan {{ client.target.host }} >> ~/.ssh/known_hosts  2>&1 | >> $rsyncLog
 echo "Rsyncing files to remote host"
-/usr/bin/rsync -rhtPv --rsync-path=rsync --progress $BACKUPDIR/* -e ssh xtrabackup@{{ client.target.host }}:$BACKUPDIR >> $rsyncLog
+/usr/bin/rsync -rhtPv --rsync-path=rsync --progress $BACKUPDIR/* -e ssh xtrabackup@{{ client.target.host }}:$SERVERBACKUPDIR >> $rsyncLog
 
 # Check if the rsync succeeded or failed
 if ! grep -q "rsync error: " $rsyncLog; then

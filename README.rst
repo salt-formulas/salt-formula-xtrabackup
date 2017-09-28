@@ -46,7 +46,7 @@ Backup client with local backup only
   .. note:: full_backups_to_keep param states how many backup will be stored locally on xtrabackup client
 
 
-Backup client with ssh/rsync remote host with compression:
+Backup client with ssh/rsync to remote host with compression and non-default backup directory on server:
 
 .. code-block:: yaml
 
@@ -63,11 +63,17 @@ Backup client with ssh/rsync remote host with compression:
           password: password
         target:
           host: cfg01
+      server:
+        enabled: false
+        backup_dir: /srv/backup
 
   .. note:: More options to relocate local backups can be done using salt-formula-backupninja.
 
+  .. note:: If the ``server`` section is ommited backups will be made to
+  default location, same on both client and server side.
 
-Backup server rsync
+
+Backup server rsync and non-default backup directory:
 
 .. code-block:: yaml
 
@@ -80,9 +86,12 @@ Backup server rsync
           xtrabackup_pub_key:
             enabled: true
             key: key
+        backup_dir: /srv/backup
 
   .. note:: hours_before_full param should have the same value as is stated on xtrabackup client
 
+  .. note:: If the ``backup_dir`` argument is ommited backups will be made to
+  default location, same on both client and server side.
 
 Client restore from local backups: 
 
