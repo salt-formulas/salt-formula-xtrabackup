@@ -48,7 +48,7 @@ xtrabackup_user:
 
 {%- set clients = [] %}
 {%- for node_name, node_grains in salt['mine.get']('*', 'grains.items').iteritems() %}
-{%- if node_grains.get('xtrabackup') and node_grains.xtrabackup.get('client') %}
+{%- if node_grains.get('xtrabackup', {}).get('client') %}
 {%- set client = node_grains.xtrabackup.get("client") %}
 {%- if client.get('addresses') and client.get('addresses', []) is iterable %}
 {%- for address in client.addresses %}

@@ -5,7 +5,7 @@
 {%- if ips %}
   {%- for ip in ips %}
     {%- if not (ip|string).startswith('127.')  %}
-    {%- do addresses.append('- ' + ip) %}
+    {%- do addresses.append(ip) %}
     {%- endif %}
   {%- endfor %}
 {%- endif %}
@@ -14,10 +14,7 @@ grain:
   xtrabackup:
     xtrabackup:
       client:
-        addresses:
-        {%- for address in addresses %}
-          {{ address }}
-        {%- endfor %}
+        addresses: {{ addresses|yaml }}
 {%- endif %}
 
 {%- endif %}
