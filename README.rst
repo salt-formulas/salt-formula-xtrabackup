@@ -93,7 +93,16 @@ Backup server rsync and non-default backup directory:
   .. note:: If the ``backup_dir`` argument is ommited backups will be made to
   default location, same on both client and server side.
 
-Client restore from local backups: 
+
+Backup server without strict client restriction
+
+.. code-block:: yaml
+
+    xtrabackup:
+      server:
+        restrict_clients: false
+
+Client restore from local backups:
 
 .. code-block:: yaml
 

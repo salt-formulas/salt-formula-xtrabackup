@@ -16,11 +16,13 @@
   'Debian': {
     'pkgs': ['rsync'],
     'cron': True,
+    'restrict_clients': True,
     'backup_dir': '/var/backups/mysql/xtrabackup'
   },
   'RedHat': {
     'pkgs': ['rsync'],
     'cron': True,
+    'restrict_clients': True,
     'backup_dir': '/var/backups/mysql/xtrabackup'
   },
 }, merge=salt['pillar.get']('xtrabackup:server')) %}
