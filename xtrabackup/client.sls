@@ -35,8 +35,23 @@ xtrabackup_client_runner_cron:
 {%- if not client.cron %}
   - commented: True
 {%- endif %}
-  - minute: 0
-{%- if client.hours_before_incr is defined %}
+{%- if client.backup_times is defined %}
+{%- if client.backup_times.dayOfWeek is defined %}
+  - dayweek: {{ client.backup_times.dayOfWeek }}
+{%- endif -%}
+{%- if client.backup_times.month is defined %}
+  - month: {{ client.backup_times.month }}
+{%- endif %}
+{%- if client.backup_times.dayOfMonth is defined %}
+  - daymonth: {{ client.backup_times.dayOfMonth }}
+{%- endif %}
+{%- if client.backup_times.hour is defined %}
+  - hour: {{ client.backup_times.hour }}
+{%- endif %}
+{%- if client.backup_times.minute is defined %}
+  - minute: {{ client.backup_times.minute }}
+{%- endif %}
+{%- elif client.hours_before_incr is defined %}
 {%- if client.hours_before_incr <= 23 and client.hours_before_incr > 1 %}
   - hour: '*/{{ client.hours_before_incr }}'
 {%- elif not client.hours_before_incr <= 1 %}
