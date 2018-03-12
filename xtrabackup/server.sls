@@ -73,6 +73,13 @@ xtrabackup_key_{{ key.key }}:
     - file: {{ server.backup_dir }}/full
     - file: {{ server.backup_dir }}/incr
 
+{%- else %}
+
+xtrabackup_key_{{ key.key }}:
+  ssh_auth.absent:
+  - user: xtrabackup
+  - name: {{ key.key }}
+
 {%- endif %}
 
 {%- endfor %}
@@ -86,17 +93,25 @@ xtrabackup_server_script:
   - require:
     - pkg: xtrabackup_server_packages
 
+{%- if server.cron %}
+
 xtrabackup_server_cron:
   cron.present:
   - name: /usr/local/bin/innobackupex-runner.sh
   - user: xtrabackup
-{%- if not server.cron %}
-  - commented: True
-{%- endif %}
   - minute: 0
   - hour: 2
   - require:
     - file: xtrabackup_server_script
+
+{%- else %}
+
+xtrabackup_server_cron:
+  cron.absent:
+  - name: /usr/local/bin/innobackupex-runner.sh
+  - user: xtrabackup
+
+{%- endif %}
 
 xtrabackup_server_call_restore_script:
   file.managed:

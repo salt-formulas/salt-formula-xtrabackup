@@ -28,13 +28,12 @@ xtrabackups_incr_dir:
   - group: root
   - makedirs: true
 
+{%- if client.cron %}
+
 xtrabackup_client_runner_cron:
   cron.present:
   - name: /usr/local/bin/innobackupex-runner.sh
   - user: root
-{%- if not client.cron %}
-  - commented: True
-{%- endif %}
 {%- if client.backup_times is defined %}
 {%- if client.backup_times.dayOfWeek is defined %}
   - dayweek: {{ client.backup_times.dayOfWeek }}
@@ -62,6 +61,15 @@ xtrabackup_client_runner_cron:
 {%- endif %}
   - require:
     - file: xtrabackup_client_runner_script
+
+{%- else %}
+
+xtrabackup_client_runner_cron:
+  cron.absent:
+  - name: /usr/local/bin/innobackupex-runner.sh
+  - user: root
+
+{%- endif %}
 
 {%- if client.restore_full_latest is defined %}
 
