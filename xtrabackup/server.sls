@@ -42,47 +42,15 @@ xtrabackup_user:
     - user: xtrabackup_user
     - pkg: xtrabackup_server_packages
 
-{%- for key_name, key in server.key.iteritems() %}
-
-{%- if key.get('enabled', False) %}
-
-{%- set clients = [] %}
-{%- if server.restrict_clients %}
-  {%- for node_name, node_grains in salt['mine.get']('*', 'grains.items').iteritems() %}
-    {%- if node_grains.get('xtrabackup', {}).get('client') %}
-    {%- set client = node_grains.xtrabackup.get("client") %}
-      {%- if client.get('addresses') and client.get('addresses', []) is iterable %}
-        {%- for address in client.addresses %}
-          {%- do clients.append(address|string) %}
-        {%- endfor %}
-      {%- endif %}
-    {%- endif %}
-  {%- endfor %}
-{%- endif %}
-
-xtrabackup_key_{{ key.key }}:
-  ssh_auth.present:
+{{ server.backup_dir }}/.ssh/authorized_keys:
+  file.managed:
   - user: xtrabackup
-  - name: {{ key.key }}
-  - options:
-    - no-pty
-{%- if clients %}
-    - from="{{ clients|join(',') }}"
-{%- endif %}
+  - group: xtrabackup
+  - template: jinja
+  - source: salt://xtrabackup/files/authorized_keys
   - require:
     - file: {{ server.backup_dir }}/full
     - file: {{ server.backup_dir }}/incr
-
-{%- else %}
-
-xtrabackup_key_{{ key.key }}:
-  ssh_auth.absent:
-  - user: xtrabackup
-  - name: {{ key.key }}
-
-{%- endif %}
-
-{%- endfor %}
 
 xtrabackup_server_script:
   file.managed:
