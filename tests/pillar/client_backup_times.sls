@@ -5,9 +5,9 @@ xtrabackup:
     incr_before_full: 3
     backup_dir: /var/backups/mysql/xtrabackup
     backup_times:
-      dayOfWeek: 0
+      day_of_week: 0
 #     month: *
-#     dayOfMonth: *
+#     day_of_month: *
       hour: 4
       minute: 52
     compression: true

@@ -35,14 +35,14 @@ xtrabackup_client_runner_cron:
   - name: /usr/local/bin/innobackupex-runner.sh
   - user: root
 {%- if client.backup_times is defined %}
-{%- if client.backup_times.dayOfWeek is defined %}
-  - dayweek: {{ client.backup_times.dayOfWeek }}
+{%- if client.backup_times.day_of_week is defined %}
+  - dayweek: {{ client.backup_times.day_of_week }}
 {%- endif -%}
 {%- if client.backup_times.month is defined %}
   - month: {{ client.backup_times.month }}
 {%- endif %}
-{%- if client.backup_times.dayOfMonth is defined %}
-  - daymonth: {{ client.backup_times.dayOfMonth }}
+{%- if client.backup_times.day_of_month is defined %}
+  - daymonth: {{ client.backup_times.day_of_month }}
 {%- endif %}
 {%- if client.backup_times.hour is defined %}
   - hour: {{ client.backup_times.hour }}
