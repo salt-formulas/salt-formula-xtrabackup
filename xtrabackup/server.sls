@@ -42,6 +42,14 @@ xtrabackup_user:
     - user: xtrabackup_user
     - pkg: xtrabackup_server_packages
 
+{{ server.backup_dir }}/.ssh:
+  file.directory:
+  - mode: 700
+  - user: xtrabackup
+  - group: xtrabackup
+  - require:
+    - user: xtrabackup_user
+
 {{ server.backup_dir }}/.ssh/authorized_keys:
   file.managed:
   - user: xtrabackup
@@ -51,6 +59,7 @@ xtrabackup_user:
   - require:
     - file: {{ server.backup_dir }}/full
     - file: {{ server.backup_dir }}/incr
+    - file: {{ server.backup_dir }}/.ssh
 
 xtrabackup_server_script:
   file.managed:
