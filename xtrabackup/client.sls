@@ -51,6 +51,7 @@ xtrabackup_client_runner_cron:
   - minute: {{ client.backup_times.minute }}
 {%- endif %}
 {%- elif client.hours_before_incr is defined %}
+  - minute: 0
 {%- if client.hours_before_incr <= 23 and client.hours_before_incr > 1 %}
   - hour: '*/{{ client.hours_before_incr }}'
 {%- elif not client.hours_before_incr <= 1 %}
