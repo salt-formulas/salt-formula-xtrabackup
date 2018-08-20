@@ -135,8 +135,6 @@ if [ $PARENT_DIR = $FULLBACKUPDIR ]; then
         cp qpress  /usr/bin/qpress
         chmod 755 /usr/bin/qpress
         chown root:root /usr/bin/qpress
-{%- elif client.qpress.source == 'pkg' %}
-        apt install {{ client.qpress.name }} > $decompressionLog 2>&1
 {%- endif %}
     fi
     echo "Uncompressing $FULLBACKUP"
@@ -168,8 +166,6 @@ else
           cp qpress  /usr/bin/qpress
           chmod 755 /usr/bin/qpress
           chown root:root /usr/bin/qpress
-{%- elif client.qpress.source == 'pkg' %}
-          apt install {{ client.qpress.name }} > $decompressionLog 2>&1
 {%- endif %}
       fi
       echo "Uncompressing $FULLBACKUP"
@@ -218,3 +214,6 @@ echo "Verify files ownership in mysql data dir."
 echo
 echo "completed: `date`"
 exit 0
+{#
+# vim: ft=jinja
+#}

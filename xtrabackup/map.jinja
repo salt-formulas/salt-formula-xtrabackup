@@ -1,12 +1,17 @@
+{%- if salt['pillar.get']('xtrabackup:client:qpress:source') == 'pkg' %}
+  {% set client_pkgs_list = ['percona-xtrabackup', 'qpress'] %}
+{%- else %}
+  {% set client_pkgs_list = ['percona-xtrabackup' ] %}
+{%- endif %}
 
 {% set client = salt['grains.filter_by']({
   'Debian': {
-    'pkgs': ['percona-xtrabackup'],
+    'pkgs': client_pkgs_list,
     'cron': True,
     'backup_dir': '/var/backups/mysql/xtrabackup'
   },
   'RedHat': {
-    'pkgs': ['percona-xtrabackup'],
+    'pkgs': client_pkgs_list,
     'cron': True,
     'backup_dir': '/var/backups/mysql/xtrabackup'
   },

@@ -214,7 +214,7 @@ Client restore from local backups:
    db from the last full backup and its increments. 2 would mean to
    restore second latest full backup and its increments
 
-Client restore from remote backups: 
+Client restore from remote backups:
 
 .. code-block:: yaml
 
