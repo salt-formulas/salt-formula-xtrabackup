@@ -21,17 +21,22 @@ FULL=`find $BACKUPDIR/full -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort
 FULL_INCR=`find $BACKUPDIR/incr -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort -nr | head -{{ client.restore_full_latest }} | tail -1`
 BEFORE_NEXT_FULL_INCR=`find $BACKUPDIR/incr -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort -nr | head -$(( {{ client.restore_full_latest }} - 1 )) | tail -1`
 
+if [ -z "$FULL" ]; then
+    echo "Error: No local backup found in $BACKUPDIR/full" >&2
+    exit 1
+fi
+
 if [ -z "$BEFORE_NEXT_FULL_INCR" ]; then
     BEFORE_NEXT_FULL_INCR="Empty"
 fi
 
-if [ $FULL = $FULL_INCR ]; then
+if [ "$FULL" = "$FULL_INCR" ]; then
   LATEST_FULL_INCR=`find $BACKUPDIR/incr/$FULL_INCR -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort -nr | head -1 | tail -1`
   echo "Restoring full backup $FULL starting from its latest incremental $LATEST_FULL_INCR"
   echo "Calling /usr/local/bin/innobackupex-restore.sh $BACKUPDIR/incr/$FULL/$LATEST_FULL_INCR"
   echo
   /usr/local/bin/innobackupex-restore.sh $BACKUPDIR/incr/$FULL_INCR/$LATEST_FULL_INCR
-elif [ $FULL = $BEFORE_NEXT_FULL_INCR ]; then
+elif [ "$FULL" = "$BEFORE_NEXT_FULL_INCR" ]; then
   LATEST_FULL_INCR=`find $BACKUPDIR/incr/$BEFORE_NEXT_FULL_INCR -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort -nr | head -1 | tail -1`
   echo "Restoring full backup $FULL starting from its latest incremental $LATEST_FULL_INCR"
   echo "Calling /usr/local/bin/innobackupex-restore.sh $BACKUPDIR/incr/$FULL/$LATEST_FULL_INCR"
