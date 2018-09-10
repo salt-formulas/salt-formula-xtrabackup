@@ -10,6 +10,8 @@ xtrabackup:
     database:
       user: user
       password: password
+      host: localhost
+      port: 3306
     target:
       host: host01
     qpress:
