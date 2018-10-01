@@ -21,6 +21,8 @@ xtrabackup_user:
   - name: xtrabackup
   - system: true
   - home: {{ server.backup_dir }}
+  - groups:
+    - xtrabackup
 
 xtrabackup_group:
   group.present:
