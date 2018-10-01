@@ -22,6 +22,13 @@ xtrabackup_user:
   - system: true
   - home: {{ server.backup_dir }}
 
+xtrabackup_group:
+  group.present:
+  - name: xtrabackup
+  - system: true
+  - require_in:
+    - user: xtrabackup_user
+
 {{ server.backup_dir }}/full:
   file.directory:
   - mode: 755
