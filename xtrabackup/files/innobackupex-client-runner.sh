@@ -24,7 +24,7 @@ while getopts ":skip-cleanup" opt; do
       ;;
   esac
 done
-USEROPTIONS="--user={{ client.database.user }} --password={{ client.database.password }} --socket=/var/run/mysqld/mysqld.sock"
+USEROPTIONS="--user={{ client.database.user }} --password={{ client.database.password }}{%- if client.database.host is defined %} --host {{ client.database.host }} --port {{ client.database.get('port', '3306') }}{%- else %} --socket=/var/run/mysqld/mysqld.sock{%- endif %}"
 #TMPFILE="/var/log/backups/innobackupex-runner.$$.tmp"
 LOGDIR=/var/log/backups
 TMPFILE="/var/log/backups/innobackupex-runner.log"
@@ -112,6 +112,14 @@ else
   compression_threads=
 fi
 
+# If throttling is enabled, pass it on to the backup command
+{%- if client.throttle is defined %}
+echo "Setting throttling to True, IO limit is {{ client.get('throttle', '20') }}MB"
+throttle="--throttle {{ client.get('throttle', 20) }}"
+{%- else %}
+throttle=""
+{%- endif %}
+
 {%- if client.backup_times is not defined %}
 # Run an incremental backup if latest full is still valid. Otherwise, run a new full one.
 if [ "$LATEST_FULL" -a `expr $LATEST_FULL_CREATED_AT + $FULLBACKUPLIFE + 5` -ge $STARTED_AT ] ; then
@@ -130,10 +138,10 @@ if [ "$LATEST_FULL" -a `expr $LATEST_FULL_CREATED_AT + $FULLBACKUPLIFE + 5` -ge 
   fi
 
   echo "Running new incremental backup using $INCRBASEDIR as base."
-  innobackupex --defaults-file=$MYCNF $USEROPTIONS $compress $compression_threads --incremental $TMPINCRDIR --incremental-basedir $INCRBASEDIR > $TMPFILE 2>&1
+  innobackupex --defaults-file=$MYCNF $USEROPTIONS $throttle $compress $compression_threads --incremental $TMPINCRDIR --incremental-basedir $INCRBASEDIR > $TMPFILE 2>&1
 else
   echo "Running new full backup."
-  innobackupex --defaults-file=$MYCNF $USEROPTIONS $compress $compression_threads $FULLBACKUPDIR > $TMPFILE 2>&1
+  innobackupex --defaults-file=$MYCNF $USEROPTIONS $throttle $compress $compression_threads $FULLBACKUPDIR > $TMPFILE 2>&1
 fi
 {%- else %}
 # Get number of full and incremental backups

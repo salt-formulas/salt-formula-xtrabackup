@@ -29,6 +29,27 @@ Backup client with ssh/rsync remote host:
    be stored locally on xtrabackup client. More options to relocate local
    backups can be done using ``salt-formula-backupninja``.
 
+Backup client using DB API instead of socket (still needs to be run on the same server as DB):
+
+.. code-block:: yaml
+
+    xtrabackup:
+      client:
+        enabled: true
+        full_backups_to_keep: 3
+        hours_before_full: 48
+        hours_before_incr: 12
+        database:
+          user: username
+          password: password
+          host: localhost
+          port: 3306
+        target:
+          host: cfg01
+
+.. note:: DB user ``username`` must have "RELOAD" and "REPLICATION CLIENT"
+   privileges on all databases.
+
 Backup client with local backup only:
 
 .. code-block:: yaml
@@ -46,7 +67,7 @@ Backup client with local backup only:
 .. note:: The ``full_backups_to_keep`` parameter states how many backup will
    be stored locally on xtrabackup client.
 
-Backup client with ssh/rsync to remote host with compression and non-default
+Backup client with ssh/rsync to remote host with compression, IO throttling and non-default
 backup directory on server:
 
 .. code-block:: yaml
@@ -59,6 +80,7 @@ backup directory on server:
         hours_before_incr: 12
         compression: true
         compression_threads: 2
+        throttle: 20
         database:
           user: username
           password: password
